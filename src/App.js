@@ -1,18 +1,20 @@
 /** 应用的根组件 */
 
 import React, { Component } from 'react'
-import { Button,message } from 'antd'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
-const info = () => {
-  message.info('提示');
-};
+import Login from './pages/admin/admin'
+import Admin from './pages/login/login'
 
 export default class App extends Component {
   render() {
     return (
-      <div>
-        <Button type="primary" onClick={info}>测试antd</Button>
-      </div>
+      <BrowserRouter>
+        <Switch>
+          <Route path='/login' component={Login} />
+          <Route path='/' component={Admin} />
+        </Switch>
+      </BrowserRouter>
     )
   }
 }
