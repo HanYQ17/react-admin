@@ -1,7 +1,7 @@
 /** 应用的根组件 */
 
 import React, { Component } from 'react'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Switch, Route } from 'react-router-dom' //yarn add react-router-dom
 
 import Login from './pages/admin/admin'
 import Admin from './pages/login/login'
