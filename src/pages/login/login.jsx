@@ -1,19 +1,27 @@
 import React, { Component } from "react"
 import "./login.less"
 import logo from "./images/logo.png"
-import { Form, Icon, Input, Button, Checkbox } from "antd"  //yarn add antd   
+import { Form, Icon, Input, Button, message } from "antd" //yarn add antd
+import { reqLogin } from "../../api/index"
 
 class Login extends Component {
-
   // 表单提交
   handleSubmit = e => {
     e.preventDefault()
-    this.props.form.validateFields((err, values) => {  //表单验证
+    this.props.form.validateFields(async (err, values) => {
+      //表单验证
       if (!err) {
-        console.log("Received values of form: ", values)
-      }else(
-        console.log('验证失败')
-      )
+        const { username, password } = values
+          const required = await reqLogin(username, password)  //发请求登录
+          if(required.status===0){ //登录成功
+            message.success('登录成功')
+            this.props.history.replace('/')  //不需要回退到登录页,不用push,用replace
+          }else{  //登录失败
+            message.error(required.msg)  
+          }
+      } else {
+        console.log("验证失败")
+      }
     })
   }
 
@@ -21,19 +29,18 @@ class Login extends Component {
   validatePwd = (rule, value, callback) => {
     // callback() // 没有传参代表验证通过
     // callback('XXX') // 传参了代表验证失败,并指定提示的文本
-    if(!value){
-      callback('密码必须输入')
-    }else if(value.length<4){
-      callback('密码长度不能小于4位')
-    }else if(value.length>12){
-      callback('密码长度不能大于12位')
-    }else if(!/^[a-zA-Z0-9_]+$/.test(value)){
-      callback('密码必须是英文、数字或下划线组成')
-    }else{
+    if (!value) {
+      callback("密码必须输入")
+    } else if (value.length < 4) {
+      callback("密码长度不能小于4位")
+    } else if (value.length > 12) {
+      callback("密码长度不能大于12位")
+    } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+      callback("密码必须是英文、数字或下划线组成")
+    } else {
       callback() //验证通过
     }
   }
-
 
   render() {
     const { getFieldDecorator } = this.props.form
