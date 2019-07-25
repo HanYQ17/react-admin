@@ -3,6 +3,9 @@ import "./login.less"
 import logo from "./images/logo.png"
 import { Form, Icon, Input, Button, message } from "antd" //yarn add antd
 import { reqLogin } from "../../api/index"
+import memoryUtils from "../../utils/memoryUtils"
+import storageUtils from "../../utils/storageUtils"
+import { Redirect } from "react-router-dom"
 
 class Login extends Component {
   // 表单提交
@@ -12,13 +15,20 @@ class Login extends Component {
       //表单验证
       if (!err) {
         const { username, password } = values
-          const required = await reqLogin(username, password)  //发请求登录
-          if(required.status===0){ //登录成功
-            message.success('登录成功')
-            this.props.history.replace('/')  //不需要回退到登录页,不用push,用replace
-          }else{  //登录失败
-            message.error(required.msg)  
-          }
+        const result = await reqLogin(username, password) //发请求登录
+        if (result.status === 0) {
+          //登录成功
+
+          const user = result.data
+          storageUtils.saveUser(user) //保存到localStorage
+          memoryUtils.user = user //保存到memoryUtils
+
+          message.success("登录成功")
+          this.props.history.replace("/") //不需要回退到登录页,不用push,用replace
+        } else {
+          //登录失败
+          message.error(result.msg)
+        }
       } else {
         console.log("验证失败")
       }
@@ -43,6 +53,13 @@ class Login extends Component {
   }
 
   render() {
+
+    // 判断用户是否登录,登录了就不在跳转到登录页
+    const user = memoryUtils.user
+    if (user && user._id) {
+      return <Redirect to='/' />
+    }
+
     const { getFieldDecorator } = this.props.form
     return (
       <div className="login">

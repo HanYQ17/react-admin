@@ -6,6 +6,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom' //yarn add react
 import Admin from './pages/admin/admin'
 import Login from './pages/login/login'
 
+
 export default class App extends Component {
   render() {
     return (

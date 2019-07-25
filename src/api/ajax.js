@@ -1,5 +1,4 @@
 import axios from 'axios'  //yarn add axios
-import { reject } from 'q';
 import { message } from 'antd';
 
 export default function ajax(url, data = {}, type = 'GET') {
