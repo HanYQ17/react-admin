@@ -3,7 +3,7 @@ import { message } from 'antd';
 
 export default function ajax(url, data = {}, type = 'GET') {
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {  // 使用Promise可以统一处理出错
         let promise
         if (type === 'GET') {
             promise = axios.get(url, { params: data })
@@ -14,7 +14,7 @@ export default function ajax(url, data = {}, type = 'GET') {
         promise.then(response => {
             resolve(response.data)
         }).catch(error => {
-            message.error( error.msg)
+            message.error(error.msg)
         })
     })
 }
