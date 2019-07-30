@@ -4,9 +4,7 @@
  */
 
 import store from 'store' // yarn add store
-
 const USER_KEY = 'user_key'
-
 export default {
     saveUser(user) { //保存
         // localStorage.setItem(USER_KEY, Json.stringify(user))
