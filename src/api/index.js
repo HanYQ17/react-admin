@@ -4,19 +4,31 @@ import { message } from 'antd'
 
 const BASE = ''
 
-// 登录
+// 01_登录
 export const reqLogin = (username, password) => ajax(BASE + '/login', { username, password }, 'POST')
 
-// 百度地图天气预报在线接口
+// 02_添加用户
+export const reqAddUser = (user) => ajax(BASE + '/manage/user/add', user, 'POST')
+
+// 06_获取一级或某个二级分类列表
+export const reqCategorys = (parentId) => ajax(BASE + '/manage/category/list', { parentId })
+
+// 07_添加分类
+export const reqAddCategory = (parentId,categoryName) => ajax(BASE+'/manage/category/add',{parentId,categoryName},'POST')
+
+// 08_更新品类名称
+export const reqUpdateCategory = (categoryId,categoryName) => ajax(BASE+'/manage/category/update',{categoryId,categoryName},'POST')
+
+// 20_获取天气信息
 export const reqWeather = city => {
-    return new Promise((resolve,reject)=>{
+    return new Promise((resolve, reject) => {
         const url = `http://api.map.baidu.com/telematics/v3/weather?location=${city}&output=json&ak=3p49MVra6urFRGOT9s8UBWr2`
-        jsonp(url,{},(err,data)=>{  //发送jsonp请求
+        jsonp(url, {}, (err, data) => {  //发送jsonp请求
             // console.log('jsonp()',err,data)
-            if(!err && data.status==='success'){  
-                const {dayPictureUrl,weather} = data.results[0].weather_data[0]  //取出需要的数据
-                resolve({dayPictureUrl,weather})
-            }else{
+            if (!err && data.status === 'success') {
+                const { dayPictureUrl, weather } = data.results[0].weather_data[0]  //取出需要的数据
+                resolve({ dayPictureUrl, weather })
+            } else {
                 message.error('获取天气信息失败!')
             }
         })
