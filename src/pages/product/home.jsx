@@ -5,37 +5,15 @@
 import React, { Component } from "react"
 import { Card, Select, Input, Icon, Button, Table } from "antd"
 import LinkButton from "../../components/link-button"
+import { reqProducts } from "../../api"
+import {PAGE_SIZE} from '../../utils/constants'  //一些常量
 
 const { Option } = Select
 
 export default class ProductHome extends Component {
   state = {
-    products: [
-      {
-        status: 1,
-        imgs: ["image-1564647343509.jpg"],
-        _id: "5d429fc094afb21ab09878ed",
-        name: "联想",
-        desc: "一台电脑",
-        price: 9999,
-        detail: "<p>这是一个寂寞的天,下着有些伤心的雨</p>\n",
-        pCategoryId: "5d4011ed0f7a3b2aa8bca4f5",
-        categoryId: "5d41149318cdf808780179e3",
-        __v: 0
-      },
-      {
-        status: 1,
-        imgs: ["image-1564647471496.jpg"],
-        _id: "5d42a04994afb21ab09878ee",
-        name: "海尔",
-        desc: "洗衣机",
-        price: 6666,
-        detail: "<p>疯狂动物城里的兔子当上了警察</p>\n",
-        pCategoryId: "5d4011ed0f7a3b2aa8bca4f5",
-        categoryId: "5d412e6a18cdf808780179e4",
-        __v: 0
-      }
-    ] //商品数组
+    products: [], //商品数组
+    total: 0 //总条数
   }
 
   // 初始化table的列的数组
@@ -80,12 +58,26 @@ export default class ProductHome extends Component {
     ]
   }
 
+  //   获取商品分页列表
+  getProducts = async pageNum => {
+    this.pageNum = pageNum  // 保存pageNum, 让其它方法可以看到
+    const result = await reqProducts(pageNum, PAGE_SIZE)
+    if (result.status === 0) {
+      const { total, list } = result.data
+      this.setState({ total, products: list })
+    }
+  }
+
   componentWillMount() {
-    this.initColumns()
+    this.initColumns() // 初始化table的列的数组
+  }
+
+  componentDidMount() {
+    this.getProducts(1) //获取商品分页列表
   }
 
   render() {
-    const { products } = this.state
+    const { products,total } = this.state
 
     const title = (
       <span>
@@ -113,6 +105,13 @@ export default class ProductHome extends Component {
             rowKey='_id'
             dataSource={products}
             columns={this.columns}
+            pagination={{  //分页
+              current: this.pageNum,  //当前页数
+              total,  //数据总数
+              defaultPageSize:PAGE_SIZE, //默认的每页条数
+              showQuickJumper:true,  //是否可以快速跳转至某页
+              onChange:this.getProducts  //页码改变的回调，参数是改变后的页码及每页条数
+            }}
           />
         </Card>
       </div>
