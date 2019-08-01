@@ -1,5 +1,9 @@
 import axios from 'axios'  //yarn add axios
-import { message } from 'antd';
+// import qs from 'qs'
+import { message } from 'antd'
+
+
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'  //表单方式
 
 export default function ajax(url, data = {}, type = 'GET') {
 
