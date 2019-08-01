@@ -117,50 +117,59 @@ export default class Category extends Component {
   }
 
   // 添加分类
-  addCategory = async () => {
+  addCategory = () => {
     /**
      * 1.隐藏确定框
      * 2.收集数据并发请求添加分类
      * 3.重新渲染页表
      */
-    // 1.隐藏确定框
-    this.setState({showStatus:0})
-    // 2.收集数据并发请求添加分类
-    const {categoryName,parentId} = this.form.getFieldsValue()
-    this.form.resetFields() //清除输入数据,拿到值之后再清除
-    const result = await reqAddCategory(parentId,categoryName)
-    if(result.status===0){
-      if(parentId===this.state.parentId){  //果然是当前的父元素添加才需渲染,不是添加当前分类不需要渲染
-        // 3.重新渲染页表
-        this.getCategorys()
-      }else if(parentId==='0'){ //在二级分类列表下添加一级分类, 重新获取一级分类列表, 但不需要显示一级列表
-        // this.setState({parentId:'0'},()=>{ this.getCategorys() })  //这样会返回一级列表,现在的需求是不显示一级列表
-        this.getCategorys('0')  //getCategorys添加一个参数
+    this.form.validateFields(async (err,value) => {
+      if (!err) {
+        // 1.隐藏确定框
+        this.setState({showStatus:0})
+        // 2.收集数据并发请求添加分类
+        // const {categoryName,parentId} = this.form.getFieldsValue()
+        const {categoryName,parentId} = value
+        this.form.resetFields() //清除输入数据,拿到值之后再清除
+        const result = await reqAddCategory(parentId,categoryName)
+        if(result.status===0){
+          if(parentId===this.state.parentId){  //果然是当前的父元素添加才需渲染,不是添加当前分类不需要渲染
+            // 3.重新渲染页表
+            this.getCategorys()
+          }else if(parentId==='0'){ //在二级分类列表下添加一级分类, 重新获取一级分类列表, 但不需要显示一级列表
+            // this.setState({parentId:'0'},()=>{ this.getCategorys() })  //这样会返回一级列表,现在的需求是不显示一级列表
+            this.getCategorys('0')  //getCategorys添加一个参数
+          }
+        }
       }
-      
-    }
+    })
   }
 
   // 修改品类名称
-  updateCategory = async () => {
+  updateCategory = () => {
     /**
      * 1.隐藏确定框
      * 2.发请求修改分类
      * 3.重新渲染页表
      */
-    // 1.隐藏确定框
-    this.setState({ showStatus: 0 })
-    // 2.发请求修改分类
-    const categoryId = this.category._id
-    const categoryName = this.form.getFieldValue("categoryName") //拿到子组件的form值
-    this.form.resetFields() //清除输入数据 antd组件中form的方法
-    const result = await reqUpdateCategory(categoryId, categoryName)
-    if (result.status === 0) {
-      // 3.重新渲染页表
-      this.getCategorys()
-    } else {
-      message.error("修改失败")
-    }
+    this.form.validateFields(async (err,value) => {
+      if (!err) {
+        // 1.隐藏确定框
+        this.setState({ showStatus: 0 })
+        // 2.发请求修改分类
+        const categoryId = this.category._id
+        // const categoryName = this.form.getFieldValue("categoryName") //拿到子组件的form值
+        const {categoryName} = value //拿到子组件的form值
+        this.form.resetFields() //清除输入数据 antd组件中form的方法
+        const result = await reqUpdateCategory(categoryId, categoryName)
+        if (result.status === 0) {
+          // 3.重新渲染页表
+          this.getCategorys()
+        } else {
+          message.error("修改失败")
+        }
+      }
+    })
   }
 
   // 为第一次render()准备数据
@@ -226,8 +235,8 @@ export default class Category extends Component {
           >
             <AddForm 
               categorys={categorys}  //传 '一级分类列表' 到子组件
+              parentId={parentId} //同上
               setForm={form=>{this.form=form}} //子组件传过来的值
-              parentId={parentId}
             />
           </Modal>
 

@@ -21,7 +21,10 @@ class UpdateForm extends Component {
       <Form>
         <Form.Item>
           {getFieldDecorator("categoryName", {
-            initialValue: categoryName //初始值
+            initialValue: categoryName, //初始值
+            rules:[
+              {required:true,message:'请输入类名'}
+            ]
           })(<Input placeholder='请输入分类名称' />)}
         </Form.Item>
       </Form>
