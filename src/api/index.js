@@ -20,7 +20,7 @@ export const reqAddCategory = (parentId, categoryName) => ajax(BASE + '/manage/c
 export const reqUpdateCategory = (categoryId, categoryName) => ajax(BASE + '/manage/category/update', { categoryId, categoryName }, 'POST')
 
 // 09_根据分类ID获取分类
-export const reqCategory = (categoryId) => ajax(BASE + '/manage/category/info', { categoryId }, 'GRT')
+export const reqCategory = (categoryId) => ajax(BASE + '/manage/category/info', { categoryId })
 
 // 10_获取商品分页列表
 export const reqProducts = (pageNum, pageSize) => ajax(BASE + '/manage/product/list', { pageNum, pageSize })
