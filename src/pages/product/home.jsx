@@ -3,9 +3,9 @@
  */
 
 import React, { Component } from "react"
-import { Card, Select, Input, Icon, Button, Table } from "antd"
+import { Card, Select, Input, Icon, Button, Table, message } from "antd"
 import LinkButton from "../../components/link-button"
-import { reqProducts,reqSearchProducts } from "../../api"
+import { reqProducts,reqSearchProducts,reqUpdateStatus } from "../../api"
 import {PAGE_SIZE} from '../../utils/constants'  //一些常量
 
 const { Option } = Select
@@ -38,12 +38,14 @@ export default class ProductHome extends Component {
       {
         width: 100,
         title: "状态",
-        dataIndex: "status",
-        render: () => {
+        // dataIndex: "status", //不能写这个
+        render: (product) => {
+          const {status,_id} = product
+          const newStatus = status === 1 ? 2 : 1
           return (
             <span>
-              <Button type='primary'>下架</Button>
-              <span>在售</span>
+              <Button onClick={()=>this.updateStatus(_id,newStatus)} type='primary'>{status===1?'下架':'上架'}</Button>
+              <span>{status===1?'在售':'已下架'}</span>
             </span>
           )
         }
@@ -62,7 +64,7 @@ export default class ProductHome extends Component {
   }
 
   //   获取商品分页列表
-  getProducts = async pageNum => {
+  getProducts = async (pageNum) => {
     this.pageNum = pageNum  // 保存pageNum, 让其它方法可以看到
 
     const {searchName,searchType} = this.state
@@ -79,6 +81,16 @@ export default class ProductHome extends Component {
       this.setState({ total, products: list })
     }
   }
+
+  // 更新商品状态(上架/下架)
+  updateStatus = async (productId,status)=>{
+    const result = await reqUpdateStatus(productId,status)
+    if(result.status===0){
+      message.success('更新商品成功')
+      this.getProducts(this.pageNum)
+    }
+  }
+
 
   componentWillMount() {
     this.initColumns() // 初始化table的列的数组
