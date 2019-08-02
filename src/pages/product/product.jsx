@@ -7,6 +7,7 @@ import {Switch, Route} from 'react-router-dom'
 import ProductHome from './home' //默认子路由
 import ProductDetail from './detail' //详情子路由
 import AddUpdate from './add-update' //添加和更新的子路由
+import './product.less'
 
 export default class Product extends Component {
     render() {
