@@ -26,7 +26,12 @@ export const reqCategory = (categoryId) => ajax(BASE + '/manage/category/info', 
 export const reqProducts = (pageNum, pageSize) => ajax(BASE + '/manage/product/list', { pageNum, pageSize })
 
 // 11_根据ID/Name搜索产品分页列表
-// export const reqSearchProducts = (pageNum, pageSize) => ajax(BASE + '/manage/product/search', { pageNum, pageSize }, 'GET')
+// searchType: 搜索的类型,productName/productDesc
+export const reqSearchProducts = ({pageNum, pageSize,searchName,searchType}) => ajax(BASE + '/manage/product/search', { 
+    pageNum, 
+    pageSize,
+    [searchType]:searchName
+ }, 'GET')
 
 // 20_获取天气信息
 export const reqWeather = city => {
