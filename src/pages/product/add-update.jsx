@@ -4,23 +4,61 @@
 import React, { Component } from "react"
 import { Card, Icon, Form, Input, Cascader, Button } from "antd"
 import LinkButton from "../../components/link-button"
+import { reqCategorys } from "../../api"
+
 const { TextArea } = Input
 
-const options = [
-  {
-    value: 'zhejiang',
-    label: 'Zhejiang',
-    isLeaf: false,
-  },
-  {
-    value: 'jiangsu',
-    label: 'Jiangsu',
-    isLeaf: false,
-  },
-]
 class AddUpdate extends Component {
   state = {
-    options,
+    options: []
+  }
+
+  // 根据获取到的数据生成options(级联列表)
+  initOptions = categorys => {
+    const options = categorys.map(c => ({ //根据参数遍历生成options数组
+      value: c._id,
+      label: c.name,
+      isLeaf: false
+    }))
+    this.setState({ options }) 
+  }
+
+  // 获取一级/二级分类列表
+  getCategorys = async parentId => {
+    const result = await reqCategorys(parentId)
+    // debugger  //打断点
+    if (result.status === 0) {
+      const categorys = result.data
+      if (parentId === "0") { //如果是一级分类列表
+        this.initOptions(categorys) //根据获取到的数据生成options(级联列表)
+      } else { //二级分类列表
+        return categorys // 返回二级列表 ==> 当前async函数返回的promsie就会成功且value为categorys
+      }
+    }
+  }
+
+  // 级联选择器:加载下一级列表的回调函数
+  loadData = async selectedOptions => {
+    const targetOption = selectedOptions[0] //数组的长度就是1,减1就是0
+    targetOption.loading = true
+
+    // 根据选中的分类,请求获取二级分类的列表
+    const subCategorys = await this.getCategorys(targetOption.value) //必须加上 async await
+    targetOption.loading = false
+    if (subCategorys && subCategorys.length > 0) { //有二级分类
+      const childOptions = subCategorys.map(c=>({  //生成一个二级列表的options
+        value: c._id,
+        label: c.name,
+        isLeaf: true
+      }))
+      targetOption.children = childOptions //关联到当前的option上
+    } else {  //当前选中的分类没有二级分类
+      targetOption.isLeaf = true
+    }
+
+    this.setState({
+      options: [...this.state.options]
+    })
   }
 
   // 自定义验证
@@ -41,28 +79,8 @@ class AddUpdate extends Component {
     })
   }
 
-  // 级联选择器:加载下一级列表的回调函数
-  loadData = selectedOptions => {
-    const targetOption = selectedOptions[0] //数组的长度就是1,减1就是0
-    targetOption.loading = true;
-
-    // 模拟请求异步获取二级列表数据,并更新
-    setTimeout(() => {
-      targetOption.loading = false;
-      targetOption.children = [
-        {
-          label: `${targetOption.label} Dynamic 1`,
-          value: 'dynamic1',
-        },
-        {
-          label: `${targetOption.label} Dynamic 2`,
-          value: 'dynamic2',
-        },
-      ];
-      this.setState({
-        options: [...this.state.options],
-      });
-    }, 1000)
+  componentDidMount() {
+    this.getCategorys("0")
   }
 
   render() {
@@ -119,27 +137,17 @@ class AddUpdate extends Component {
               rules: [{ required: true, message: "必须指定商品分类" }]
             })(
               <Cascader
-                options={this.state.options}  /* 需要显示的列表数据数组 */
-                loadData={this.loadData}  /* 当选择某个列表,加载下一级列表的监听回调 */
+                options={this.state.options} /* 需要显示的列表数据数组 */
+                loadData={this.loadData} /* 当选择某个列表,加载下一级列表的监听回调 */
                 placeholder='请指定商品分类'
               />
             )}
           </Form.Item>
 
-
-
-
-
-
-
-
-
           <Form.Item {...formItemLayout} label='商品图片: '>
             {getFieldDecorator("imgs", {
               initialValue: ""
-            })(
-            <span>商品图片</span>
-            )}
+            })(<span>商品图片</span>)}
           </Form.Item>
           <Form.Item {...formItemLayout} label='商品详情: '>
             {getFieldDecorator("detail", {
