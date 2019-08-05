@@ -22,7 +22,8 @@ class LeftNav extends Component {
           </Menu.Item>
         )
       } else {
-        const cItem = item.children.find(cItem=>cItem.key===path) //查找一个与当前请求路径匹配的子Item
+        // const cItem = item.children.find(cItem=>cItem.key===path) //查找一个与当前请求路径匹配的子Item
+        const cItem = item.children.find(cItem=>path.indexOf(cItem.key)===0) //查找一个与当前请求路径匹配的子Item
         if(cItem){
           this.openKey = item.key  //如果存在,说明当前item的子列表需要打开
         }
@@ -48,7 +49,10 @@ class LeftNav extends Component {
     this.menuNodes = this.getMenuNodes(menuList)
   }
   render() {
-    const path = window.location.pathname // 得到当前请求的路由路径
+    let path = window.location.pathname // 得到当前请求的路由路径
+    if(path.indexOf('/product')===0){ //indexOf匹配,返回的是:匹配到的值的下标
+      path = '/product'
+    }
 
     const openKey = this.openKey  // 得到需要打开菜单项的key
 
