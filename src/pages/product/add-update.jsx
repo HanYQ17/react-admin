@@ -5,6 +5,7 @@ import React, { Component } from "react"
 import { Card, Icon, Form, Input, Cascader, Button } from "antd"
 import LinkButton from "../../components/link-button"
 import { reqCategorys } from "../../api"
+import PicturesWall from './pictures-wall'
 
 const { TextArea } = Input
 
@@ -181,7 +182,9 @@ class AddUpdate extends Component {
           <Form.Item {...formItemLayout} label='商品图片: '>
             {getFieldDecorator("imgs", {
               initialValue: ""
-            })(<span>商品图片</span>)}
+            })(
+            <PicturesWall/> /* 商品图片组件 */
+            )}
           </Form.Item>
           <Form.Item {...formItemLayout} label='商品详情: '>
             {getFieldDecorator("detail", {

@@ -36,6 +36,9 @@ export const reqSearchProducts = ({pageNum, pageSize,searchName,searchType}) => 
 //  14_对商品进行上架/下架处理
 export const reqUpdateStatus = (productId,status) => ajax(BASE+'/manage/product/updateStatus',{productId,status},'POST')
 
+// 16_删除图片
+export const reqDeleteImg = (name) => ajax(BASE+'/manage/img/delete',{name},'POST')
+
 // 20_获取天气信息
 export const reqWeather = city => {
     return new Promise((resolve, reject) => {
