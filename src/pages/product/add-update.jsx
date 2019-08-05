@@ -14,6 +14,11 @@ class AddUpdate extends Component {
     options: []
   }
 
+  constructor(props) {
+    super(props);
+    this.pw = React.createRef();
+  }
+
   // 根据获取到的数据生成options(级联列表)
   initOptions = async categorys => {
     const options = categorys.map(c => ({ //根据参数遍历生成options数组
@@ -91,13 +96,15 @@ class AddUpdate extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         // console.log(values)
+        const node = this.pw.current.getImgs()  //调用子组件的方法
+        console.log(node)
       }
     })
   }
 
   // 会在render()调用前之前一次
   componentWillMount(){
-    const {product} = this.props.location.state //如果是'添加'就没值,是修改才有值
+    const product = this.props.location.state //如果是'添加'就没值,是修改才有值
     this.isUpdate = !!product  //转换成布尔类型
     this.product = product || {}  //保存商品,如果没有值,就给空对象,才不会报错  //'添加商品'是没有值的
   }
@@ -183,7 +190,7 @@ class AddUpdate extends Component {
             {getFieldDecorator("imgs", {
               initialValue: ""
             })(
-            <PicturesWall/> /* 商品图片组件 */
+            <PicturesWall ref={this.pw} /> /* 商品图片组件 */
             )}
           </Form.Item>
           <Form.Item {...formItemLayout} label='商品详情: '>
