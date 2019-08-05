@@ -104,7 +104,7 @@ class AddUpdate extends Component {
 
   // 会在render()调用前之前一次
   componentWillMount(){
-    const product = this.props.location.state //如果是'添加'就没值,是修改才有值
+    const {product} = this.props.location.state //如果是'添加'就没值,是修改才有值
     this.isUpdate = !!product  //转换成布尔类型
     this.product = product || {}  //保存商品,如果没有值,就给空对象,才不会报错  //'添加商品'是没有值的
   }
@@ -115,7 +115,7 @@ class AddUpdate extends Component {
 
   render() {
     const {isUpdate,product} = this
-    const {pCategoryId,categoryId} = product  //拿到分类ID
+    const {pCategoryId,categoryId,imgs} = product  //拿到分类ID
     const categoryIds = []  //用来接收级联分类ID的数组
     if(isUpdate){
       if(pCategoryId==='0'){  //一级分类只有一个分类ID
@@ -190,7 +190,7 @@ class AddUpdate extends Component {
             {getFieldDecorator("imgs", {
               initialValue: ""
             })(
-            <PicturesWall ref={this.pw} /> /* 商品图片组件 */
+            <PicturesWall ref={this.pw} imgs={imgs} /> /* 商品图片组件 */
             )}
           </Form.Item>
           <Form.Item {...formItemLayout} label='商品详情: '>

@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { Upload, Icon, Modal, message } from "antd"
 import { reqDeleteImg } from "../../api"
+import {BASE_IMG_URL} from "../../utils/constants"
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -23,6 +24,30 @@ export default class PicturesWall extends React.Component {
       //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
       //   }
     ]
+  }
+
+  constructor (props) {
+    super(props)
+
+    let fileList = []
+
+    // 如果传入了imgs属性
+    const {imgs} = this.props
+    if (imgs && imgs.length>0) {
+      fileList = imgs.map((img, index) => ({
+        uid: -index, // 每个file都有自己唯一的id
+        name: img, // 图片文件名
+        status: 'done', // 图片状态: done-已上传, uploading: 正在上传中, removed: 已删除
+        url: BASE_IMG_URL + img
+      }))
+    }
+
+    // 初始化状态
+    this.state = {
+      previewVisible: false, // 标识是否显示大图预览Modal
+      previewImage: '', // 大图的url
+      fileList // 所有已上传图片的数组
+    }
   }
 
   // 获取所有已上传图片文件名的数组
