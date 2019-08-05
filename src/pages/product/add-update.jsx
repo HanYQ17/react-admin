@@ -14,12 +14,27 @@ class AddUpdate extends Component {
   }
 
   // 根据获取到的数据生成options(级联列表)
-  initOptions = categorys => {
+  initOptions = async categorys => {
     const options = categorys.map(c => ({ //根据参数遍历生成options数组
       value: c._id,
       label: c.name,
       isLeaf: false
     }))
+    
+    // 如果是一个二级分类商品的更新
+    const {isUpdate,product} = this
+    const {pCategoryId,categoryId} = product  //拿到分类ID
+    if(isUpdate && pCategoryId !== '0'){
+      const subCategorys = await this.getCategorys(pCategoryId)  //获取对应的二级分类列表
+      const childOptions = subCategorys.map(c=>({
+        value: c._id,
+        label: c.name,
+        isLeaf: true
+      }))
+      const targetOption = options.find(option=>option.value===pCategoryId) //找到当前商品对应的一级option对象
+      targetOption.children = childOptions //关联到当前的option上
+    }
+
     this.setState({ options }) 
   }
 
@@ -74,9 +89,16 @@ class AddUpdate extends Component {
   submit = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log("Received values of form: ", values)
+        // console.log(values)
       }
     })
+  }
+
+  // 会在render()调用前之前一次
+  componentWillMount(){
+    const {product} = this.props.location.state //如果是'添加'就没值,是修改才有值
+    this.isUpdate = !!product  //转换成布尔类型
+    this.product = product || {}  //保存商品,如果没有值,就给空对象,才不会报错  //'添加商品'是没有值的
   }
 
   componentDidMount() {
@@ -84,6 +106,18 @@ class AddUpdate extends Component {
   }
 
   render() {
+    const {isUpdate,product} = this
+    const {pCategoryId,categoryId} = product  //拿到分类ID
+    const categoryIds = []  //用来接收级联分类ID的数组
+    if(isUpdate){
+      if(pCategoryId==='0'){  //一级分类只有一个分类ID
+        categoryIds.push(categoryId)
+      }else{   //二级分类有两个分类ID
+        categoryIds.push(pCategoryId) 
+        categoryIds.push(categoryId)
+      }
+    }
+
     const { getFieldDecorator } = this.props.form
     const formItemLayout = {
       labelCol: { span: 2 }, //左侧label的宽度
@@ -98,7 +132,7 @@ class AddUpdate extends Component {
             style={{ marginRight: 10, fontSize: 20 }}
           />
         </LinkButton>
-        <span>商品详情</span>
+        <span>{isUpdate?'修改商品':'添加商品'}</span>
       </span>
     )
     return (
@@ -106,19 +140,19 @@ class AddUpdate extends Component {
         <Form>
           <Form.Item {...formItemLayout} label='商品名称: '>
             {getFieldDecorator("name", {
-              initialValue: "",
+              initialValue: product.name,
               rules: [{ required: true, message: "请输入商品名称" }]
             })(<Input placeholder='请输入商品名称' />)}
           </Form.Item>
           <Form.Item {...formItemLayout} label='商品描述: '>
             {getFieldDecorator("desc", {
-              initialValue: "",
+              initialValue: product.desc,
               rules: [{ required: true, message: "请输入商品描述" }]
             })(<TextArea placeholder='请输入商品描述' autosize />)}
           </Form.Item>
           <Form.Item {...formItemLayout} label='商品价格: '>
             {getFieldDecorator("price", {
-              initialValue: "",
+              initialValue: product.price,
               rules: [
                 { required: true, message: "请输入商品价格" },
                 { validator: this.validatePrice }
@@ -133,7 +167,7 @@ class AddUpdate extends Component {
           </Form.Item>
           <Form.Item {...formItemLayout} label='商品分类: '>
             {getFieldDecorator("categoryIds", {
-              initialValue: "",
+              initialValue: categoryIds,
               rules: [{ required: true, message: "必须指定商品分类" }]
             })(
               <Cascader
