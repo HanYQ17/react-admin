@@ -1,15 +1,15 @@
 import React, { Component } from "react"
 import { Form, Select, Input } from "antd"
-// import PropTypes from "prop-types" //类型检查
+import PropTypes from "prop-types" //类型检查
 
 const { Option } = Select
 
 class AddForm extends Component {
-  // // 类型检测
-  // static PropTypes = {
-  //   categorys: PropTypes.array.isRequired
-  //   setForm: PropTypes.func.isRequired
-  // }
+  // 类型检测
+  static propTypes = {
+    categorys: PropTypes.array.isRequired,
+    setForm: PropTypes.func.isRequired
+  }
   componentWillMount(){
     this.props.setForm(this.props.form)
   }
