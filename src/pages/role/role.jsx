@@ -4,41 +4,32 @@
 
 import React, { Component } from "react"
 import { Card, Button, Table } from "antd"
+import { reqRoles } from "../../api"
 
 export default class Role extends Component {
   state = {
-    roles: [
-      {
-        _id: "5d4930ff4b080425a8d19239",
-        name: "a",
-        create_time: 1565077759349,
-        __v: 0,
-        auth_name: "admin",
-        auth_time: 1565077772767
-      },
-      {
-        menus: [],
-        _id: "5d4938e44b080425a8d1923b",
-        name: "b",
-        create_time: 1565079780849,
-        __v: 0
-      }
-    ]
+    roles: [], //所有角色列表
+    role: {},  //选中的角色,对象
   }
 
-  onRow=(event)=>{
+  // 获取所有角色
+  getRoles = async () => {
+    const result = await reqRoles()
+    if(result.status===0){
+        const roles = result.data
+        this.setState({roles})
+    }
+  }
+
+  onRow = role => {
     return {
-        onClick: event => {
-            console.log('点击行',event)
-        }, // 点击行
-        onDoubleClick: event => {},
-        onContextMenu: event => {},
-        onMouseEnter: event => {}, // 鼠标移入行
-        onMouseLeave: event => {},
-      };
+      onClick: event => {  // 点击行
+        this.setState({role})
+      }
+    }
   }
 
-//   table表格的标题数据
+  //   table表格的标题数据
   initColumn = () => {
     this.columns = [
       {
@@ -47,7 +38,7 @@ export default class Role extends Component {
       },
       {
         title: "创建时间",
-        dataIndex: "create_time",
+        dataIndex: "create_time"
         // render:(time)=>(
         //     // formatDateTime(time)
         // )
@@ -64,15 +55,19 @@ export default class Role extends Component {
   }
 
   componentWillMount() {
-    this.initColumn()
+    this.initColumn() //table头部数据
+  }
+
+  componentDidMount(){
+      this.getRoles() //获取所有角色
   }
 
   render() {
-    const { roles } = this.state
+    const { roles, role } = this.state
     const title = (
       <span>
         <Button type="primary">创建角色</Button>&nbsp;&nbsp;
-        <Button type="primary" disabled={false}>
+        <Button type="primary" disabled={!role._id}>
           设置角色权限
         </Button>
       </span>
@@ -81,11 +76,14 @@ export default class Role extends Component {
     return (
       <Card title={title}>
         <Table
-          rowKey='_id'
+          rowKey="_id"
           dataSource={roles}
           columns={this.columns}
-          rowSelection={{ type: "radio" }}  /* 单选 */
-          onRow={this.onRow}  /* 点击行选中  提高用户体验 */
+          rowSelection={{
+            type: "radio",
+            selectedRowKeys: [role._id]
+          }} /* 单选 */
+          onRow={this.onRow} /* 点击行选中  提高用户体验 */
         />
       </Card>
     )

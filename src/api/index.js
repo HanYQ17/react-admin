@@ -44,6 +44,9 @@ export const reqUpdateStatus = (productId,status) => ajax(BASE+'/manage/product/
 // 16_删除图片
 export const reqDeleteImg = (name) => ajax(BASE+'/manage/img/delete',{name},'POST')
 
+// 18_获取角色列表
+export const reqRoles = () => ajax(BASE+'/manage/role/list')
+
 // 20_获取天气信息
 export const reqWeather = city => {
     return new Promise((resolve, reject) => {
