@@ -118,7 +118,7 @@ class AddUpdate extends Component {
 
   render() {
     const {isUpdate,product} = this
-    const {pCategoryId,categoryId,imgs} = product  //拿到分类ID
+    const {pCategoryId,categoryId,imgs,detail} = product  //拿到分类ID
     const categoryIds = []  //用来接收级联分类ID的数组
     if(isUpdate){
       if(pCategoryId==='0'){  //一级分类只有一个分类ID
@@ -197,7 +197,7 @@ class AddUpdate extends Component {
             )}
           </Form.Item>
           <Form.Item labelCol={{span: 2}} wrapperCol={{span : 20}} label='商品详情: '>
-            <RichTextEditor ref={this.editor} />
+            <RichTextEditor ref={this.editor} detail={detail} />
           </Form.Item>
           <Form.Item {...formItemLayout}>
             <Button onClick={this.submit} type='primary'>
