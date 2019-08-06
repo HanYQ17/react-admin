@@ -5,7 +5,8 @@ import React, { Component } from "react"
 import { Card, Icon, Form, Input, Cascader, Button } from "antd"
 import LinkButton from "../../components/link-button"
 import { reqCategorys } from "../../api"
-import PicturesWall from './pictures-wall'
+import PicturesWall from './pictures-wall'  //图片上传组件
+import RichTextEditor from './rich-text-editor'  //富文本编辑器
 
 const { TextArea } = Input
 
@@ -17,6 +18,7 @@ class AddUpdate extends Component {
   constructor(props) {
     super(props);
     this.pw = React.createRef();
+    this.editor = React.createRef()
   }
 
   // 根据获取到的数据生成options(级联列表)
@@ -96,15 +98,16 @@ class AddUpdate extends Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         // console.log(values)
-        const node = this.pw.current.getImgs()  //调用子组件的方法
-        console.log(node)
+        const pw = this.pw.current.getImgs()  //调用子组件的方法
+        const detail = this.editor.current.getDetail()  //调用子组件的富文本编辑器内容
+        console.log(detail)
       }
     })
   }
 
   // 会在render()调用前之前一次
   componentWillMount(){
-    const {product} = this.props.location.state //如果是'添加'就没值,是修改才有值
+    const product = this.props.location.state //如果是'添加'就没值,是修改才有值
     this.isUpdate = !!product  //转换成布尔类型
     this.product = product || {}  //保存商品,如果没有值,就给空对象,才不会报错  //'添加商品'是没有值的
   }
@@ -193,10 +196,8 @@ class AddUpdate extends Component {
             <PicturesWall ref={this.pw} imgs={imgs} /> /* 商品图片组件 */
             )}
           </Form.Item>
-          <Form.Item {...formItemLayout} label='商品详情: '>
-            {getFieldDecorator("detail", {
-              initialValue: ""
-            })(<span>商品详情</span>)}
+          <Form.Item labelCol={{span: 2}} wrapperCol={{span : 20}} label='商品详情: '>
+            <RichTextEditor ref={this.editor} />
           </Form.Item>
           <Form.Item {...formItemLayout}>
             <Button onClick={this.submit} type='primary'>

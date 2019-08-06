@@ -1,3 +1,7 @@
+/**
+ * 图片上传
+ */
+
 import React, { Component } from "react"
 import { Upload, Icon, Modal, message } from "antd"
 import { reqDeleteImg } from "../../api"
