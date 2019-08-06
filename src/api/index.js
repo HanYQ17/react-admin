@@ -33,6 +33,11 @@ export const reqSearchProducts = ({pageNum, pageSize,searchName,searchType}) => 
     [searchType]:searchName
  }, 'GET')
 
+// 12_添加/修改商品
+export const reqAddOrUpdateProduct = (product) => ajax(BASE+'/manage/product/'+(product._id?'update':'add'),product,'POST')
+// 13_更新商品
+// export const reqUpdateProduct = (product) => ajax(BASE+'/manage/product/update',product,'POST')
+
 //  14_对商品进行上架/下架处理
 export const reqUpdateStatus = (productId,status) => ajax(BASE+'/manage/product/updateStatus',{productId,status},'POST')
 

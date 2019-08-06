@@ -2,9 +2,9 @@
  * Product的添加和更新的子路由组件
  */
 import React, { Component } from "react"
-import { Card, Icon, Form, Input, Cascader, Button } from "antd"
+import { Card, Icon, Form, Input, Cascader, Button, message } from "antd"
 import LinkButton from "../../components/link-button"
-import { reqCategorys } from "../../api"
+import { reqCategorys,reqAddOrUpdateProduct } from "../../api"
 import PicturesWall from './pictures-wall'  //图片上传组件
 import RichTextEditor from './rich-text-editor'  //富文本编辑器
 
@@ -95,12 +95,40 @@ class AddUpdate extends Component {
 
   // 表单提交
   submit = () => {
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        // console.log(values)
-        const pw = this.pw.current.getImgs()  //调用子组件的方法
-        const detail = this.editor.current.getDetail()  //调用子组件的富文本编辑器内容
-        console.log(detail)
+        /** 
+         * 1.收集数据
+         * 2.发送请求
+         * 3.根据提示
+         */
+        // 1.收集数据
+        const {name,desc,price,categoryIds} = values
+        let pCategoryId,categoryId
+        if(categoryIds.length === 1){
+          pCategoryId = '0'
+          categoryId = categoryIds[0]
+        }else{
+          pCategoryId = categoryIds[0]
+          categoryId = categoryIds[1]
+        }
+        const imgs = this.pw.current.getImgs()  //获取商品图片名数组
+        const detail = this.editor.current.getDetail()  //获取富文本编辑器内容(商品详情)
+        const product = {name,desc,price,pCategoryId,categoryId,imgs,detail}
+        if(this.isUpdate){  //如果是修改,需要_id参数
+          product._id = this.product._id
+        }
+        
+        // 2.发送请求
+        const result = await reqAddOrUpdateProduct(product)
+
+        // 3.根据提示
+        if(result.status===0){
+          message.success(`${this.isUpdate?'更新':'添加'}商品成功`)
+          this.props.history.goBack()  //返回上一级
+        }else{
+          message.error(`${this.isUpdate?'更新':'添加'}商品失败`)
+        }
       }
     })
   }
