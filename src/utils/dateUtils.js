@@ -27,12 +27,14 @@ export function formatDateTimeTiny(d) {
 
 // 年-月-日 时:分:秒
 export function formatDateTime(d) {
-    let year = d.getFullYear()
-    let month = d.getMonth() + 1
-    let day = d.getDate()
-    let hour = d.getHours()
-    let minute = d.getMinutes()
-    let seconds = d.getSeconds()
+    if (!d) return ''
+    let date = new Date(d)
+    let year = date.getFullYear()
+    let month = date.getMonth() + 1
+    let day = date.getDate()
+    let hour = date.getHours()
+    let minute = date.getMinutes()
+    let seconds = date.getSeconds()
 
     month = month > 10 ? month : '0' + month
     day = day > 10 ? day : '0' + day

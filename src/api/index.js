@@ -45,10 +45,13 @@ export const reqUpdateStatus = (productId,status) => ajax(BASE+'/manage/product/
 export const reqDeleteImg = (name) => ajax(BASE+'/manage/img/delete',{name},'POST')
 
 // 17_添加角色
-export const reqUpdateRole = (roleName) => ajax(BASE+'/manage/role/add',{roleName},'POST')
+export const reqAddRole = (roleName) => ajax(BASE+'/manage/role/add',{roleName},'POST')
 
 // 18_获取角色列表
 export const reqRoles = () => ajax(BASE+'/manage/role/list')
+
+// 19_更新角色(给角色设置权限)
+export const reqUpdateRole = (role) => ajax(BASE+'/manage/role/update',role,'POST')
 
 // 20_获取天气信息
 export const reqWeather = city => {
