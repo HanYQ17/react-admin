@@ -137,7 +137,7 @@ export default class ProductHome extends Component {
             dataSource={products}
             columns={this.columns}
             pagination={{  //分页
-              current: this.pageNum,  //当前页数
+              current: this.pageNum,  //当前页数(必须设置:搜索时才会返回第一页)
               total,  //数据总数
               defaultPageSize:PAGE_SIZE, //默认的每页条数
               showQuickJumper:true,  //是否可以快速跳转至某页

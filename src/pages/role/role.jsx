@@ -169,8 +169,7 @@ export default class Role extends Component {
           rowSelection={{
             type: "radio",
             selectedRowKeys: [role._id],
-            onSelect: role => {
-              // 选择某个radio时回调
+            onSelect: role => { // 选择某个radio时回调(设置了,点击单选才能选中)
               this.setState({
                 role
               })
