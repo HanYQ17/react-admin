@@ -1,3 +1,10 @@
+/*
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-08-06 15:37:07
+ * @LastEditTime: 2019-08-06 15:37:07
+ * @LastEditors: your name
+ */
 /**
  * 导航菜单配置
  */
@@ -7,6 +14,7 @@ const menuList = [
         title: ' 首页', // 菜单标题名称
         key: '/home', // 对应的 path
         icon: 'home', // 图标名称
+        isPublic:true //公开的
     },
     {
         title: ' 商品',
