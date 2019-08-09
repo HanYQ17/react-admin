@@ -7,8 +7,8 @@ const BASE = ''
 // 01_登录
 export const reqLogin = (username, password) => ajax(BASE + '/login', { username, password }, 'POST')
 
-// 02_添加用户
-export const reqAddUser = (user) => ajax(BASE + '/manage/user/add', user, 'POST')
+// 02_添加/修改用户
+export const reqAddUser = (user) => ajax(BASE + '/manage/user/'+(user._id?'update':'add'), user, 'POST')
 
 // 04_获取所有用户列表
 export const reqUsers = () => ajax(BASE + '/manage/user/list')
