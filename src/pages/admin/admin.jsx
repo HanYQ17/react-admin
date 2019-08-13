@@ -14,11 +14,14 @@ import Product from "../product/product"
 import Role from "../role/role"
 import User from "../user/user"
 
+import {connect} from 'react-redux' 
+
 const { Footer, Sider, Content } = Layout
 
-export default class Admin extends Component {
+class Admin extends Component {
   render() {
-    const user = memoryUtils.user
+    // const user = memoryUtils.user
+    const user = this.props.user
     // 判断,没登录就跳转到登录页
     if (!user || !user._id) {
       return <Redirect to="/login" />
@@ -57,3 +60,7 @@ export default class Admin extends Component {
     )
   }
 }
+export default connect(
+  state => ({user:state.user}),
+  {}
+)(Admin)

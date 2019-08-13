@@ -11,6 +11,7 @@ import storageUtils from '../../utils/storageUtils'
 import LinkButton from '../link-button' //按钮
 
 import {connect} from 'react-redux' 
+import {logout} from '../../redux/reudx'
 
 class Header extends Component {
   state = {
@@ -62,9 +63,10 @@ class Header extends Component {
       cancelText: "取消",
       onOk: () => {  //变成箭头函数,因为有this
         // 退出登录: 清除本地数据 及 保存的user数据
-        storageUtils.removeUser()
-        memoryUtils.user = {}
-        this.props.history.replace('/login') //跳转到登录页
+        // storageUtils.removeUser()
+        // memoryUtils.user = {}
+        // this.props.history.replace('/login') //跳转到登录页
+        this.props.logout()
       },
       onCancel() {
         console.log("Cancel")
@@ -85,7 +87,8 @@ class Header extends Component {
 
   render() {
     const { currentTime, dayPictureUrl, weather } = this.state
-    const { username } = user.user
+    // const { username } = memoryUtils.props.user
+    const { username } = this.props.user
     // const title = this.getTitle() //得到当前需要显示的title
     const title = this.props.headTitle
     return (
@@ -108,6 +111,6 @@ class Header extends Component {
 }
 
 export default connect(
-  state => ({headTitle:state.headTitle}),  //初始值
-  {}   //方法
+  state => ({headTitle:state.headTitle,user:state.user}),  //初始值
+  {logout}   //方法
 )(withRouter(Header))

@@ -12,13 +12,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
-import storageUtils from './utils/storageUtils'
-import memoryUtils from './utils/memoryUtils'
+// import storageUtils from './utils/storageUtils'
+// import memoryUtils from './utils/memoryUtils'
 import { Provider } from 'react-redux' //npm install --save react-redux
 import store from './redux/reudx'
 
-const user = storageUtils.getUser() //获取的用户信息
-memoryUtils.user = user //设置到memoryUtils中
+// const user = storageUtils.getUser() //获取的用户信息
+// memoryUtils.user = user //设置到memoryUtils中
 
 ReactDOM.render(
     <Provider store={store}>

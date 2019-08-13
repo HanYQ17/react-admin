@@ -6,6 +6,8 @@ import { reqLogin } from "../../api/index"
 import memoryUtils from "../../utils/memoryUtils"
 import storageUtils from "../../utils/storageUtils"
 import { Redirect } from "react-router-dom"
+import {connect} from 'react-redux' 
+import {login} from '../../redux/reudx'
 
 class Login extends Component {
   // 表单提交
@@ -15,20 +17,21 @@ class Login extends Component {
       //表单验证
       if (!err) {
         const { username, password } = values
-        const result = await reqLogin(username, password) //发请求登录
-        if (result.status === 0) {
-          //登录成功
 
-          const user = result.data
-          storageUtils.saveUser(user) //保存到localStorage
-          memoryUtils.user = user //保存到memoryUtils
+        // 调用分发异步action的函数 => 发登录的异步请求,有了结果后更新状态
+        this.props.login(username, password)
 
-          message.success("登录成功")
-          this.props.history.replace("/home") //不需要回退到登录页,不用push,用replace
-        } else {
-          //登录失败
-          message.error(result.msg)
-        }
+        // const result = await reqLogin(username, password) //发请求登录
+        // if (result.status === 0) { //登录成功
+        //   const user = result.data
+        //   storageUtils.saveUser(user) //保存到localStorage
+        //   memoryUtils.user = user //保存到memoryUtils
+        //   message.success("登录成功")
+        //   this.props.history.replace("/home") //不需要回退到登录页,不用push,用replace
+        // } else {
+        //   //登录失败
+        //   message.error(result.msg)
+        // }
       } else {
         console.log("验证失败")
       }
@@ -55,9 +58,10 @@ class Login extends Component {
   render() {
 
     // 判断用户是否登录,登录了就不在跳转到登录页
-    const user = memoryUtils.user
+    // const user = memoryUtils.user
+    const user = this.props.user
     if (user && user._id) {
-      return <Redirect to='/' />
+      return <Redirect to='/home' />
     }
 
     const { getFieldDecorator } = this.props.form
@@ -68,6 +72,7 @@ class Login extends Component {
           <h1>React项目:后台管理系统</h1>
         </header>
         <section className="login-content">
+          <div className={user.errorMsg ? 'error-msg show' : 'error-msg'}>{user.errorMsg}</div>
           <h2>用户登录</h2>
           <div>
             <Form onSubmit={this.handleSubmit} className="login-form">
@@ -123,7 +128,13 @@ class Login extends Component {
     )
   }
 }
-export default Form.create()(Login)
+
+const WrapLogin = Form.create()(Login)
+
+export default connect(
+  state => ({user:state.user}),
+  {login}
+)(WrapLogin)
 
 /*
 1. 高阶函数

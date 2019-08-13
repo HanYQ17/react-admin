@@ -16,8 +16,10 @@ class LeftNav extends Component {
   // 权限管理 判断当前登录用户对item是否有权限
   hasAuth = item => {
     const {key,isPublic} = item
-    const menus = memoryUtils.user.role.menus
-    const username = memoryUtils.user.username
+    // const menus = memoryUtils.user.role.menus
+    // const username = memoryUtils.user.username
+    const menus = this.props.user.role.menus
+    const username = this.props.user.username
     /**
      * 1.如果当前用户是admin:全都有权限
      * 2.如果当前item是公开的:则默认所有用户都有这个权限
@@ -115,6 +117,6 @@ withRouter高阶组件:
 // export default withRouter(LeftNav)
 
 export default connect(
-  state => ({}),  //初始值
-  {setHeadTitle}   //方法
+  state => ({user:state.user}),  
+  {setHeadTitle}   
 )(withRouter(LeftNav))
