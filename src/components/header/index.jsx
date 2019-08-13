@@ -10,6 +10,8 @@ import memoryUtils from '../../utils/memoryUtils'
 import storageUtils from '../../utils/storageUtils'
 import LinkButton from '../link-button' //按钮
 
+import {connect} from 'react-redux' 
+
 class Header extends Component {
   state = {
     currentTime: formatDateTime(new Date()),
@@ -84,7 +86,8 @@ class Header extends Component {
   render() {
     const { currentTime, dayPictureUrl, weather } = this.state
     const { username } = user.user
-    const title = this.getTitle()
+    // const title = this.getTitle() //得到当前需要显示的title
+    const title = this.props.headTitle
     return (
       <div className="header">
         <div className="header-top">
@@ -103,4 +106,8 @@ class Header extends Component {
     )
   }
 }
-export default withRouter(Header)
+
+export default connect(
+  state => ({headTitle:state.headTitle}),  //初始值
+  {}   //方法
+)(withRouter(Header))

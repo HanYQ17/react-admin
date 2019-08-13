@@ -6,6 +6,9 @@ import { Menu, Icon } from "antd"
 import menuList from "../../config/menuConfig"
 import memoryUtils from '../../utils/memoryUtils'
 
+import {connect} from 'react-redux' 
+import {setHeadTitle} from '../../redux/reudx'
+
 const { SubMenu } = Menu
 
 class LeftNav extends Component {
@@ -40,7 +43,7 @@ class LeftNav extends Component {
         if (!item.children) {  // 如果当前用户有item对应的权限, 才需要显示对应的菜单项
           return (
             <Menu.Item key={item.key}>
-              <Link to={item.key}>
+              <Link to={item.key} onClick={()=>this.props.setHeadTitle(item.title)}>  {/* 更改store里的数据 */}
                 <Icon type={item.icon} />
                 <span>{item.title}</span>
               </Link>
@@ -106,5 +109,9 @@ withRouter高阶组件:
 包装非路由组件, 返回一个新的组件
 新的组件向非路由组件传递3个属性: history/location/match
  */
-export default withRouter(LeftNav)
+// export default withRouter(LeftNav)
 
+export default connect(
+  state => ({}),  //初始值
+  {setHeadTitle}   //方法
+)(withRouter(LeftNav))
