@@ -24,7 +24,7 @@ class Login extends Component {
           memoryUtils.user = user //保存到memoryUtils
 
           message.success("登录成功")
-          this.props.history.replace("/") //不需要回退到登录页,不用push,用replace
+          this.props.history.replace("/home") //不需要回退到登录页,不用push,用replace
         } else {
           //登录失败
           message.error(result.msg)
