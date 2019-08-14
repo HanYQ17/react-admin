@@ -13,6 +13,7 @@ import Pie from "../charts/pie"
 import Product from "../product/product"
 import Role from "../role/role"
 import User from "../user/user"
+import NotFound from '../not-found/not-found'
 
 import {connect} from 'react-redux' 
 
@@ -39,6 +40,7 @@ class Admin extends Component {
           {/* 路由 */}
           <Content style={{ margin: 20, backgroundColor: "#fff" }}>
             <Switch>
+              <Redirect exact from="/" to="/home" />
               <Route path="/home" component={Home} />
               <Route path="/category" component={Category} />
               <Route path="/product" component={Product} />
@@ -47,7 +49,7 @@ class Admin extends Component {
               <Route path="/charts/bar" component={Bar} />
               <Route path="/charts/line" component={Line} />
               <Route path="/charts/pie" component={Pie} />
-              <Redirect to="/home" />
+              <Route component={NotFound} />  {/** 上面没有一个匹配,直接显示404 */}
             </Switch>
           </Content>
 
