@@ -7,6 +7,7 @@ import LinkButton from "../../components/link-button"
 import { reqCategorys,reqAddOrUpdateProduct } from "../../api"
 import PicturesWall from './pictures-wall'  //图片上传组件
 import RichTextEditor from './rich-text-editor'  //富文本编辑器
+import memoryUtils from "../../utils/memoryUtils"
 
 const { TextArea } = Input
 
@@ -135,10 +136,17 @@ class AddUpdate extends Component {
 
   // 会在render()调用前之前一次
   componentWillMount(){
-    const product = this.props.location.state //如果是'添加'就没值,是修改才有值
-    this.isUpdate = !!product  //转换成布尔类型
+    // const product = this.props.location.state //如果是'添加'就没值,是修改才有值
+    const product = memoryUtils.product //如果是'添加'就没值,是修改才有值
+    // this.isUpdate = !!product  //转换成布尔类型
+    this.isUpdate = !!product._id  //转换成布尔类型
     this.product = product || {}  //保存商品,如果没有值,就给空对象,才不会报错  //'添加商品'是没有值的
   }
+
+// 在卸载之前清除保存的数据
+ componentWillUnmount () {
+  memoryUtils.product = {}
+}
 
   componentDidMount() {
     this.getCategorys("0")

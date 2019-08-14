@@ -7,6 +7,7 @@ import { Card, Select, Input, Icon, Button, Table, message } from "antd"
 import LinkButton from "../../components/link-button"
 import { reqProducts,reqSearchProducts,reqUpdateStatus } from "../../api"
 import {PAGE_SIZE} from '../../utils/constants'  //一些常量
+import memoryUtils from "../../utils/memoryUtils"
 
 const { Option } = Select
 
@@ -55,12 +56,24 @@ export default class ProductHome extends Component {
         title: "操作",
         render: (product) => (
           <span>
-            <LinkButton onClick={()=>this.props.history.push('/product/detail',{product})}>详情</LinkButton>
-            <LinkButton onClick={()=>this.props.history.push('/product/AddUpdate',product)}>修改</LinkButton>
+            {/* <LinkButton onClick={()=>this.props.history.push('/product/detail',{product})}>详情</LinkButton>
+            <LinkButton onClick={()=>this.props.history.push('/product/AddUpdate',product)}>修改</LinkButton> */}
+            <LinkButton onClick={()=>this.showDetail(product)}>详情</LinkButton>
+            <LinkButton onClick={()=>this.showUpdate(product)}>修改</LinkButton>
           </span>
         )
       }
     ]
+  }
+  // 显示商品详情界面
+  showDetail = (product) => {
+    memoryUtils.product=product // 缓存product对象 ==> 给detail组件使用
+    this.props.history.push('/product/detail')
+  }
+  // 显示修改商品界面
+  showUpdate = (product) => {
+    memoryUtils.product=product // 缓存product对象 ==> 给AddUpdate组件使用
+    this.props.history.push('/product/AddUpdate')
   }
 
   //   获取商品分页列表
